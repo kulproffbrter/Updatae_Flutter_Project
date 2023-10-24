@@ -1,30 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:work_schedule/work.dart';
+import 'package:work_schedule/Work.dart';
 
-class emptyPage extends StatefulWidget {
-  const emptyPage({super.key});
+class EmptyPage extends StatefulWidget {
+  const EmptyPage({super.key});
 
   @override
-  State<emptyPage> createState() => _emptyState();
+  State<EmptyPage> createState() => _EmptyState();
 }
 
-class _emptyState extends State<emptyPage> {
+class _EmptyState extends State<EmptyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFFFFCA79),
+        backgroundColor: Color(
+            0xFFFFCA79), // กำหนดสีพื้นหลังของแถบชื่อเป็น RGB (255, 202, 121)
         title: Align(
           alignment: Alignment.center,
-          child: Text("My Dashboard"),
+          child: Text("ตารางงานของฉัน"),
         ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.refresh),
-            alignment: Alignment.centerRight,
-            onPressed: () {},
-          ),
-        ],
       ),
       backgroundColor: Color.fromARGB(
           255, 243, 223, 192), // กำหนดสีพื้นหลังเป็น RGB (255, 202, 121)
@@ -44,9 +38,7 @@ class _emptyState extends State<emptyPage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    WorkPage()), // GGPage เป็นชื่อหน้าตามที่คุณต้องการ
+            MaterialPageRoute(builder: (context) => WorkPage()),
           );
         },
         tooltip: 'สร้างตารางงาน', // ข้อความ tooltip

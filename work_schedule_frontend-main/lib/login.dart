@@ -3,7 +3,7 @@ import 'package:work_schedule/register.dart';
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:http/http.dart' as http;
-import 'package:work_schedule/dashboard.dart';
+import 'package:work_schedule/Dashboard.dart';
 import 'package:work_schedule/http.dart';
 
 class LoginPage extends StatefulWidget {

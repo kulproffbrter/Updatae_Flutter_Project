@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:work_schedule/work.dart';
+import 'package:work_schedule/Work.dart';
 import 'package:work_schedule/http.dart';
-import 'package:work_schedule/updateWork.dart';
+import 'package:work_schedule/UpdateWork.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -40,20 +40,47 @@ class _DashboardState extends State<DashboardPage> {
     }
   }
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   getAllWork();
-  // }
+  /* @override
+void initState() {
+  super.initState();
+  getAllWork();
+}
 
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //   getAllWork();
-  // }
-// setState(() {
-//       workList.removeAt(index);
-//     });
+Future<void> getAllWork() async {
+  try {
+    var response = await http.get(Uri.parse(getAllwork),
+        headers: {"Content-Type": "application/json"});
+    var jsonResponse = jsonDecode(response.body);
+
+    if (jsonResponse != null) {
+      if (jsonResponse is List) {
+        setState(() {
+          workList = List<Map<String, dynamic>>.from(jsonResponse);
+        });
+      } else if (jsonResponse is Map) {
+        setState(() {
+          workList.add(Map<String, dynamic>.from(jsonResponse));
+        });
+      } else {
+        throw ("Invalid response format");
+      }
+    } else {
+      throw ("No data received");
+    }
+  } catch (error) {
+    throw error;
+  }
+}
+
+ @override
+   void didChangeDependencies() {
+   super.didChangeDependencies();
+    getAllWork();
+   }
+    setState(() {
+  workList.removeAt(index);
+}); */
+
   Future<void> deleteWork(int index) async {
     try {
       var response = await http.delete(
@@ -75,173 +102,202 @@ class _DashboardState extends State<DashboardPage> {
     }
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'ตารางงานของฉัน',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      home: const UpdateMyHomePage(title: 'ตารางงานของฉัน'),
+    );
+  }
+}
+
+class UpdateMyHomePage extends StatefulWidget {
+  const UpdateMyHomePage({Key? key, required this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  _UpdateMyHomePageState createState() => _UpdateMyHomePageState();
+}
+
+class _UpdateMyHomePageState extends State<UpdateMyHomePage> {
+  String? selectedValue;
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFFFFCA79),
-        title: Align(
-          alignment: Alignment.center,
-          child: Text("My Dashboard"),
+        backgroundColor: const Color(0xFFFFCA79),
+        title: PreferredSize(
+          preferredSize: Size.fromHeight(80.0), // กำหนดความสูงของ AppBar
+          child: Container(
+            alignment: Alignment.center,
+            child: Text(widget.title),
+          ),
         ),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.refresh),
+          Align(
             alignment: Alignment.centerRight,
-            onPressed: () {
-              getAllWork();
-            },
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  right: 30.0), // เพิ่มระยะห่างด้านขวา 30px
+              child: IconButton(
+                icon: Icon(Icons.refresh),
+                onPressed: () {
+                  //getAllWork();
+                },
+              ),
+            ),
           ),
         ],
       ),
-      backgroundColor: Color.fromRGBO(243, 223, 192, 1),
-      body: Center(
-        child: ListView.builder(
-          itemCount: workList.length,
-          itemBuilder: (context, index) {
-            var work = workList[index];
-            var headers = work['headers'];
-            var startDate = work['startDate'];
-            var endDate = work['endDate'];
-            var startTime = work['startTime'];
-            var endTime = work['endTime'];
-            var selectedValue = work['status'];
-
-            return Container(
-              width: 400,
-              height: 230,
-              child: Card(
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: <Widget>[
-                          Text(
-                            '$headers',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
+      backgroundColor: const Color.fromARGB(255, 243, 223, 192),
+      body: Align(
+        alignment: Alignment.topCenter,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 20.0), // เพิ่มระยะห่างด้านบน 20px
+          child: Container(
+            width: 400,
+            height: 230,
+            child: Card(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: <Widget>[
+                        Text(
+                          'header',
+                          //'$headers',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text('วันเริ่มต้น')
+                            //Text('วันเริ่มต้น: $startDate $startTime')
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text('วันครบกำหนด')
+                            //Text('วันครบกำหนด: $endDate $endTime')
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            DropdownButton<String>(
+                              value: selectedValue,
+                              items: [
+                                DropdownMenuItem<String>(
+                                  value: 'กำลังทำ',
+                                  child: Row(
+                                    children: <Widget>[
+                                      Container(
+                                        width: 16,
+                                        height: 16,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.blue,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text('กำลังทำ'),
+                                    ],
+                                  ),
+                                ),
+                                DropdownMenuItem<String>(
+                                  value: 'แก้ไข',
+                                  child: Row(
+                                    children: <Widget>[
+                                      Container(
+                                        width: 16,
+                                        height: 16,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.yellow,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text('แก้ไข'),
+                                    ],
+                                  ),
+                                ),
+                                DropdownMenuItem<String>(
+                                  value: 'เสร็จสิ้น',
+                                  child: Row(
+                                    children: <Widget>[
+                                      Container(
+                                        width: 16,
+                                        height: 16,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.green,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text('เสร็จสิ้น'),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedValue = value!;
+                                });
+                              },
                             ),
-                          ),
-                          const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text('วันเริ่มต้น: $startDate $startTime')
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text('วันครบกำหนด: $endDate $endTime')
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              DropdownButton<String>(
-                                value: selectedValue,
-                                items: [
-                                  DropdownMenuItem<String>(
-                                    value: 'กำลังทำ',
-                                    child: Row(
-                                      children: <Widget>[
-                                        Container(
-                                          width: 16,
-                                          height: 16,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.blue,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Text('กำลังทำ'),
-                                      ],
-                                    ),
+                            Row(
+                              children: <Widget>[
+                                SizedBox(width: 10),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.of(context)
+                                        .pushReplacement(MaterialPageRoute(
+                                      builder: (context) => UpdateWorkPage(),
+                                    ));
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    shadowColor: Colors.black,
+                                    elevation: 5,
                                   ),
-                                  DropdownMenuItem<String>(
-                                    value: 'แก้ไข',
-                                    child: Row(
-                                      children: <Widget>[
-                                        Container(
-                                          width: 16,
-                                          height: 16,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.yellow,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Text('แก้ไข'),
-                                      ],
-                                    ),
+                                  child: Text('แก้ไข'),
+                                ),
+                                SizedBox(width: 10),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    //deleteWork(index);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.red,
                                   ),
-                                  DropdownMenuItem<String>(
-                                    value: 'เสร็จสิ้น',
-                                    child: Row(
-                                      children: <Widget>[
-                                        Container(
-                                          width: 16,
-                                          height: 16,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.green,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Text('เสร็จสิ้น'),
-                                      ],
-                                    ),
+                                  child: Icon(
+                                    Icons.delete,
+                                    color: Colors.white,
                                   ),
-                                ],
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedValue = value!;
-                                  });
-                                },
-                              ),
-                              Row(
-                                children: <Widget>[
-                                  SizedBox(width: 10),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.of(context)
-                                          .pushReplacement(MaterialPageRoute(
-                                        builder: (context) => UpdateWorkPage(),
-                                      ));
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      shadowColor: Colors.black,
-                                      elevation: 5,
-                                    ),
-                                    child: Text('แก้ไข'),
-                                  ),
-                                  SizedBox(width: 10),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      deleteWork(index);
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      primary: Colors.red,
-                                    ),
-                                    child: Icon(
-                                      Icons.delete,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 20),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
               ),
-            );
-          },
+            ),
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(

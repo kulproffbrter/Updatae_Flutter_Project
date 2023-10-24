@@ -1,15 +1,15 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:work_schedule/dashboard.dart';
+import 'package:work_schedule/Dashboard.dart';
 import 'package:work_schedule/http.dart';
 
 class UpdateWorkPage extends StatefulWidget {
   @override
-  _UpdateWorkPageState createState() => _UpdateWorkPageState();
+  _UpdateWorkState createState() => _UpdateWorkState();
 }
 
-class _UpdateWorkPageState extends State<UpdateWorkPage> {
+class _UpdateWorkState extends State<UpdateWorkPage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   DateTime? startDate;
@@ -17,7 +17,7 @@ class _UpdateWorkPageState extends State<UpdateWorkPage> {
   TimeOfDay? startTime;
   TimeOfDay? endTime;
   var index = 0;
-  var year = 2010;
+  var year = 2023;
   var Null = null;
 
   Future<void> _selectStartDate(BuildContext context) async {
@@ -25,7 +25,7 @@ class _UpdateWorkPageState extends State<UpdateWorkPage> {
       context: context,
       initialDate: startDate ?? DateTime.now(),
       firstDate: DateTime.now(),
-      lastDate: DateTime(year + 30),
+      lastDate: DateTime(year + 10),
     ))!;
     if (picked != Null && picked != startDate) {
       setState(() {
@@ -116,7 +116,7 @@ class _UpdateWorkPageState extends State<UpdateWorkPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('แก้ไขตารางงานของคุณ'),
+        title: Text('         แก้ไขจัดตารางงานของคุณ'),
         backgroundColor: Color(0xFFFFCA79),
       ),
       backgroundColor: Color(0xFFFFECCF),
